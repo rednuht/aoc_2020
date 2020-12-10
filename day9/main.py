@@ -1,8 +1,8 @@
 def check_part1(numbers, end_index, preamble_size=25):
     target = numbers[end_index]
     start_index = end_index - preamble_size
-    for i in range(start_index, end_index):
-        for j in range(i, end_index):
+    for i in range(start_index, end_index - 1):
+        for j in range(i + 1, end_index):
             if numbers[i] + numbers[j] == target:
                 return True
 
@@ -12,16 +12,14 @@ def check_part1(numbers, end_index, preamble_size=25):
 def check_part2(numbers, target):
     numbers_size = len(numbers)
     start_index = 0
-    target_sum = 0
-    while start_index < numbers_size:
-        for i in range(start_index, numbers_size):
-            number = numbers[i]
-            target_sum += number
+    while start_index < numbers_size - 2:
+        target_sum = numbers[start_index] + numbers[start_index + 1]
+        for i in range(start_index + 2, numbers_size):
+            target_sum += numbers[i]
             if target_sum == target:
-                sequence = numbers[start_index:i]
-                return min(sequence) + max(sequence)
+                sequence = sorted(numbers[start_index:i])
+                return sequence[0] + sequence[-1]
             elif target_sum > target:
-                target_sum = 0
                 start_index += 1
                 break
 
