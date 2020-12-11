@@ -5,23 +5,23 @@ def copy_seats(seats):
 
 
 def fill_the_seats(seats, look_far_skip_floor=False, occupied_seat_limit=4):
-    x = len(seats[0])
-    y = len(seats)
+    x_max = len(seats[0])
+    y_max = len(seats)
     last_nr_occupied = 0
     while True:
         new_seats = copy_seats(seats)
         nr_occupied = 0
-        for i in range(y):
-            for j in range(x):
-                seat = seats[i][j]
-                nr_occupied_adjacent_seats = look_for_occupied_seats(seats, x, y, i, j, occupied_seat_limit,
+        for y in range(y_max):
+            for x in range(x_max):
+                seat = seats[y][x]
+                nr_occupied_adjacent_seats = look_for_occupied_seats(seats, x_max, y_max, y, x, occupied_seat_limit,
                                                                      look_far_skip_floor)
                 if seat == 'L' and nr_occupied_adjacent_seats == 0:
-                    new_seats[i][j] = '#'
+                    new_seats[y][x] = '#'
                 elif seat == '#' and nr_occupied_adjacent_seats >= occupied_seat_limit:
-                    new_seats[i][j] = 'L'
+                    new_seats[y][x] = 'L'
 
-                if new_seats[i][j] == '#':
+                if new_seats[y][x] == '#':
                     nr_occupied += 1
 
         if nr_occupied == last_nr_occupied:
@@ -32,7 +32,7 @@ def fill_the_seats(seats, look_far_skip_floor=False, occupied_seat_limit=4):
     return last_nr_occupied
 
 
-def look_for_occupied_seats(seats, xl, yl, x, y, occupied_seat_limit, look_far_skip_floor=False):
+def look_for_occupied_seats(seats, x_max, y_max, x, y, occupied_seat_limit, look_far_skip_floor=False):
     nr_occupied_seats = 0
     for i in [-1, 0, 1]:
         for j in [-1, 0, 1]:
@@ -42,11 +42,11 @@ def look_for_occupied_seats(seats, xl, yl, x, y, occupied_seat_limit, look_far_s
 
             ii = x + i
             jj = y + j
-            while look_far_skip_floor and 0 <= ii < xl and 0 <= jj < yl and seats[ii][jj] == '.':
+            while look_far_skip_floor and 0 <= ii < x_max and 0 <= jj < y_max and seats[ii][jj] == '.':
                 # continue looking in the direction as long as it's only floor in the way
                 ii += i
                 jj += j
-            if 0 <= ii < xl and 0 <= jj < yl and seats[ii][jj] == '#':
+            if 0 <= ii < x_max and 0 <= jj < y_max and seats[ii][jj] == '#':
                 nr_occupied_seats += 1
 
             if nr_occupied_seats >= occupied_seat_limit:
