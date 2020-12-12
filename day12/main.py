@@ -29,8 +29,8 @@ def part1(nav_instructions):
         elif action == 'R':
             direction = (direction - value) % 360
         elif action == 'F':
-            ship_x += dir_map[direction][0]*value
-            ship_y += dir_map[direction][1]*value
+            ship_x += dir_map[direction][0] * value
+            ship_y += dir_map[direction][1] * value
         else:
             ship_x += NAV_MAP[action][0] * value
             ship_y += NAV_MAP[action][1] * value
@@ -46,15 +46,14 @@ def part2(nav_instructions):
     for action, value in parse_nav_instructions(nav_instructions):
         if action == 'L' or action == 'R':
             # rotate the waypoint
-            # x' = x*cos(rads) - y*sin(rads)
-            # y' = y*cos(rads) + x*sin(rads)
-            rads = math.radians(value)
-            if action == 'R':
-                rads = -rads
-            new_waypoint_x = waypoint_x * math.cos(rads) - waypoint_y * math.sin(rads)
-            new_waypoint_y = waypoint_y * math.cos(rads) + waypoint_x * math.sin(rads)
-            waypoint_x = round(new_waypoint_x)
-            waypoint_y = round(new_waypoint_y)
+            # (waypoint_x + waypoint_y*i) * (-)i will rotate by +/- pi/2
+            i = complex(0, 1 if action == 'L' else -1)
+            c = complex(waypoint_x, waypoint_y)
+            for _ in range(int(value / 90)):
+                c *= i
+
+            waypoint_x = c.real
+            waypoint_y = c.imag
         elif action == 'F':
             ship_x += waypoint_x * value
             ship_y += waypoint_y * value
@@ -62,7 +61,7 @@ def part2(nav_instructions):
             waypoint_x += NAV_MAP[action][0] * value
             waypoint_y += NAV_MAP[action][1] * value
 
-    print('part2', abs(ship_x) + abs(ship_y))
+    print('part2', int(abs(ship_x) + abs(ship_y)))
 
 
 def day12():
