@@ -1,5 +1,12 @@
 import math
 
+NAV_MAP = {
+    'N': [0, 1],
+    'S': [0, -1],
+    'E': [1, 0],
+    'W': [-1, 0],
+}
+
 
 def parse_nav_instructions(nav_instructions):
     for instruction in nav_instructions:
@@ -10,32 +17,24 @@ def part1(nav_instructions):
     direction = 0
     ship_x = 0
     ship_y = 0
+    dir_map = {
+        0: [1, 0],
+        90: [0, 1],
+        180: [-1, 0],
+        270: [0, -1],
+    }
     for action, value in parse_nav_instructions(nav_instructions):
-        if action == 'N':
-            ship_y += value
-        elif action == 'S':
-            ship_y -= value
-        elif action == 'E':
-            ship_x += value
-        elif action == 'W':
-            ship_x -= value
-        elif action == 'L':
+        if action == 'L':
             direction = (direction + value) % 360
         elif action == 'R':
             direction = (direction - value) % 360
         elif action == 'F':
-            if direction == 0:
-                # east
-                ship_x += value
-            elif direction == 90:
-                # north
-                ship_y += value
-            elif direction == 180:
-                # west
-                ship_x -= value
-            elif direction == 270:
-                # south
-                ship_y -= value
+            ship_x += dir_map[direction][0]*value
+            ship_y += dir_map[direction][1]*value
+        else:
+            ship_x += NAV_MAP[action][0] * value
+            ship_y += NAV_MAP[action][1] * value
+
     print('part1', abs(ship_x) + abs(ship_y))
 
 
@@ -45,21 +44,13 @@ def part2(nav_instructions):
     ship_x = 0
     ship_y = 0
     for action, value in parse_nav_instructions(nav_instructions):
-        if action == 'N':
-            waypoint_y += value
-        elif action == 'S':
-            waypoint_y -= value
-        elif action == 'E':
-            waypoint_x += value
-        elif action == 'W':
-            waypoint_x -= value
-        elif action == 'L' or action == 'R':
+        if action == 'L' or action == 'R':
             # rotate the waypoint
             # x' = x*cos(rads) - y*sin(rads)
             # y' = y*cos(rads) + x*sin(rads)
             rads = math.radians(value)
             if action == 'R':
-                rads *= -1
+                rads = -rads
             new_waypoint_x = waypoint_x * math.cos(rads) - waypoint_y * math.sin(rads)
             new_waypoint_y = waypoint_y * math.cos(rads) + waypoint_x * math.sin(rads)
             waypoint_x = round(new_waypoint_x)
@@ -67,6 +58,9 @@ def part2(nav_instructions):
         elif action == 'F':
             ship_x += waypoint_x * value
             ship_y += waypoint_y * value
+        else:
+            waypoint_x += NAV_MAP[action][0] * value
+            waypoint_y += NAV_MAP[action][1] * value
 
     print('part2', abs(ship_x) + abs(ship_y))
 
