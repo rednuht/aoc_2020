@@ -1,5 +1,3 @@
-import math
-
 NAV_MAP = {
     'N': [0, 1],
     'S': [0, -1],
