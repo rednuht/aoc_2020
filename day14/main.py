@@ -2,12 +2,7 @@ import itertools
 
 
 def memory_address_combinations(number):
-    floating_indices = []
-    for i, c in enumerate(number):
-        if c == 'X':
-            floating_indices.append(i)
-
-    for combinations in list(itertools.product([0, 1], repeat=len(floating_indices))):
+    for combinations in itertools.product([0, 1], repeat=number.count('X')):
         new_number = number
         for binary_value in combinations:
             new_number = new_number.replace('X', str(binary_value), 1)
